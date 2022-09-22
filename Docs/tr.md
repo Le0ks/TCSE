@@ -98,7 +98,7 @@
   - HTML
   - CSS
   - JS
-  - React ?
+  - React 
 
 
 # 6. Дизайн
