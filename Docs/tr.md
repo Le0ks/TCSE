@@ -99,7 +99,7 @@
 
 - Бэкенд:
   - Язык Python (Django)
-  - БД PostgreSQL
+  - БД PostgreSQL ? (подумать, может не стоит запариваться с базой данных и использовать стандартную SQLlite)
 
 - Фронтенд:
   - HTML
@@ -118,5 +118,13 @@
 1. Django:
    - https://django.fun/docs/django/ru/4.0/
    - https://www.youtube.com/playlist?list=PLmC7X4gkQWCeyIdLxHZdts-3tkcrxP4-o
+   - https://djangogirls.org/ru/resources/
 2. PostgreSQL:
    - https://postgrespro.ru/docs/postgresql/14/index
+
+---
+---
+---
+Идеи названия проекта:
+- MakeStudyEvent
+- MakeStudyEcentEasy
