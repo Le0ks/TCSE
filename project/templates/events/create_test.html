@@ -1,0 +1,242 @@
+{% extends "base.html" %}
+
+{% load answer_formset %}
+{% load widget_tweaks %}
+
+{% block title %}Создание теста{% endblock title %}
+{% block script %}
+  <script>
+    function updateForm(event) {
+        const formValue = event.target.value;
+        const startTimeField = document.getElementById("id_event-start_time");
+        const finishTimeField = document.getElementById("id_event-finish_time");
+        const durationField = document.getElementById("id_event-duration");
+        
+        const startTimeLabel = document.getElementById("id_event-start_time-label");
+        const finishTimeLabel = document.getElementById("id_event-finish_time-label");
+        const durationLabel = document.getElementById("id_event-duration-label");
+
+        startTimeField.parentElement.style.display = "none";
+        startTimeField.required = false;
+        finishTimeField.parentElement.style.display = "none";
+        finishTimeField.required = false;
+        durationField.parentElement.style.display = "none";
+        durationField.required = false;
+
+        startTimeLabel.style.display = "none";
+        finishTimeLabel.style.display = "none";
+        durationLabel.style.display = "none";
+
+        if (formValue == 1) {
+            durationField.parentElement.style.display = "block";
+            durationField.required = true;
+            durationLabel.style.display = "block";
+        } else if (formValue == 2) {
+            startTimeField.parentElement.style.display = "block";
+            startTimeField.required = true;
+            finishTimeField.parentElement.style.display = "block";
+            finishTimeField.required = true;
+            startTimeLabel.style.display = "block";
+            finishTimeLabel.style.display = "block";
+        } else if (formValue == 3) {
+            startTimeField.parentElement.style.display = "block";
+            startTimeField.required = true;
+            finishTimeField.parentElement.style.display = "block";
+            finishTimeField.required = true;
+            durationField.parentElement.style.display = "block";
+            durationField.required = true;
+            durationLabel.style.display = "block";
+            startTimeLabel.style.display = "block";
+            finishTimeLabel.style.display = "block";
+        }
+    }
+  </script>
+{% endblock script %}
+
+{% block content %}
+    <div class="container">
+        <form enctype="multipart/form-data" method="post" id="form-container">
+            {% csrf_token %}
+            <div class="card mb-4">
+              <div class="card-header">
+                <h4 class="card-title d-flex justify-content-center text-reset text-decoration-none fs-1">Создаем тест</h4>
+              </div>
+              <div class="card-body p-2">
+                {% for error in event.non_field_errors %}
+                    <div class="alert alert-danger">
+                        {{ error|escape }}
+                    </div>
+                {% endfor %}
+                {% for field in event %}
+                  {% if field.name == "is_private" %}
+                    <div>
+                      <label id="{{ field.id_for_label }}-label" for="{{ field.id_for_label }}" class="form-label">
+                        {{ field.label }}
+                      </label>
+                      {{ field|add_class:"form-check-input" }}
+                    </div>
+                  {% else %}
+                    <label id="{{ field.id_for_label }}-label" for="{{ field.id_for_label }}" class="form-label">
+                      {{ field.label }}
+                    </label>
+                    <div>
+                      {{ field|add_class:"form-control" }}
+                    </div>
+                  {% endif %}
+                  {% if event.errors %}
+                      {% for error in field.errors %}
+                          <div class="invalid-feedback">{{ error|escape }}</div>
+                      {% endfor %}
+                  {% endif %}
+                {% endfor %}
+              </div>
+            </div>
+            <div id="tasks">
+              {{ task_formset.management_form }}
+              {% for task in task_formset %}
+                <div class="card mb-4 task_form-{{ forloop.counter }}">
+                  <div class="card-header card-header-secondary">
+                    <h4 class="card-title">Задание {{ forloop.counter }}</h4>
+                  </div>
+                  <div class="card-body p-2">                  
+                    {% for field in task %}
+                      <label for="{{ field.id_for_label }}" class="form-label">
+                          {{ field.label }}
+                      </label>
+                      <div>
+                        {{ field|add_class:"form-control" }}
+                      </div>
+                      {% if field.name == "tags" %}
+                        <div id="{{ field.html_name }}HelpText" class="form-text text-center">{{ field.help_text }}</div>
+                      {% endif %}
+                      {% if task.errors %}
+                          {% for error in field.errors %}
+                              <div class="invalid-feedback">{{ error|escape }}</div>
+                          {% endfor %}
+                      {% endif %}
+                    {% endfor %}
+                    {% for error in task_formset.non_form_errors %}
+                        <div class="alert alert-danger" role="alert">
+                          {{ error|escape }}
+                        </div>
+                    {% endfor %}
+                    {% with answer_formsets|get:forloop.counter as answer_formset %}
+                      {{ answer_formset.management_form }}
+                      <div id="answers-{{ forloop.counter }}">
+                        {% for answer in answer_formset %}
+                          <div>
+                            <h5>Ответ {{ forloop.counter }}</h5>
+                            {% for field in answer %}
+                              <div>
+                                {% if field.name == "is_correct" %}
+                                  <label for="{{ field.id_for_label }}" class="form-label">
+                                    {{ field.label }}
+                                  </label>
+                                  {{ field|add_class:"form-check-input" }}
+                                {% elif field.name == "comment" %}
+                                  <label for="{{ field.id_for_label }}" class="form-label">
+                                    {{ field.label }}
+                                  </label>
+                                  {{ field|add_class:"form-control" }}
+                                {% else %}
+                                  {{ field|add_class:"form-control" }}
+                                {% endif %}
+                              </div>
+                            {% endfor %}    
+                          </div>
+                        {% endfor %}
+                      </div>
+                    {% endwith %}
+                    <button type="button" data-id="{{ forloop.counter }}" onclick="addAnswer({{ forloop.counter }})" id="add-answer-form" class="btn btn-primary">Добавить ответ</button>
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+            <button type="button" onclick="addTask()" id="add-task-form" class="btn btn-primary mb-3">Добавить вопрос</button>
+            <button type="submit" class="btn btn-primary d-grid gap-2 col-6 mx-auto">Создать</button>
+          </form>
+    </div>
+    <script>
+      const typeByTimeField = document.getElementById("id_event-type_by_time");
+      typeByTimeField.addEventListener("change", updateForm);
+      updateForm({target: typeByTimeField});
+
+
+      function addAnswer(id) {
+        const block = document.getElementById(`answers-${id}`);
+        const newEl = document.createElement("div");
+        const newId = `answers-${id}-${ block.children.length }`
+        newEl.innerHTML = `
+          <h5>Ответ ${ block.children.length + 1 }</h5>
+          <div>
+            <input type="text" name="${newId}-text" maxlength="150" class="form-control" id="id_${newId}-text">
+          </div>
+          <div>
+            <label for="id_${newId}-is_correct" class="form-label">Правильный ли ответ</label>
+            <input type="checkbox" name="${newId}-is_correct" class="form-check-input" id="id_${newId}-is_correct">
+          </div>
+        `
+        block.append(newEl);
+        document.getElementById(`id_answers-${id}-TOTAL_FORMS`).value = block.children.length;
+      }
+
+      function addTask() {
+        const block = document.getElementById("tasks");
+        const newEl = document.createElement("div");
+        let newId = 0; 
+        for (let el of block.children) {
+          if (el.tagName != "INPUT") newId++;
+        }
+        newEl.className = `card mb-4 task_form-${ newId + 1 }`;
+        newEl.innerHTML = `
+          <div class="card-header card-header-secondary">
+            <h4 class="card-title">Задание ${ newId + 1 }</h4>
+          </div>
+          <div class="card-body p-2">                  
+              <label for="id_tasks-${ newId }-text" class="form-label">
+                  Текст задания
+              </label>
+              <div>
+                <textarea name="tasks-${ newId }-text" cols="40" rows="10" class="form-control" id="id_tasks-${ newId }-text"></textarea>
+              </div>
+              <label for="id_tasks-${ newId }-tags" class="form-label">
+                  Тэги
+              </label>
+              <div>
+                <input type="text" name="tasks-${ newId }-tags" maxlength="250" class="form-control" id="id_tasks-${ newId }-tags">
+              </div>
+              <div id="tasks-${ newId }-tagsHelpText" class="form-text text-center">Введите тэги через пробел (например: #tag1 #tag2 #tag3 #tag4 #tag5)</div>
+              <input type="hidden" name="answers-${ newId + 1}-TOTAL_FORMS" value="2" id="id_answers-${ newId + 1}-TOTAL_FORMS"><input type="hidden" name="answers-${ newId + 1}-INITIAL_FORMS" value="0" id="id_answers-${ newId + 1}-INITIAL_FORMS"><input type="hidden" name="answers-${ newId + 1}-MIN_NUM_FORMS" value="0" id="id_answers-${ newId + 1}-MIN_NUM_FORMS"><input type="hidden" name="answers-${ newId + 1}-MAX_NUM_FORMS" value="1000" id="id_answers-${ newId + 1}-MAX_NUM_FORMS">
+              <div id="answers-${ newId + 1}">
+                  <div>
+                    <h5>Ответ 1</h5>
+                      <div>
+                          <input type="text" name="answers-${ newId + 1}-0-text" maxlength="150" class="form-control" id="id_answers-${ newId + 1}-0-text">
+                      </div>
+                      <div>
+                          <label for="id_answers-${ newId + 1}-0-is_correct" class="form-label">
+                            Правильный ли ответ
+                          </label>
+                          <input type="checkbox" name="answers-${ newId + 1}-0-is_correct" class="form-check-input" id="id_answers-${ newId + 1}-0-is_correct">
+                      </div>
+                  </div>
+                  <div>
+                    <h5>Ответ 2</h5>
+                      <div>
+                          <input type="text" name="answers-${ newId + 1}-1-text" maxlength="150" class="form-control" id="id_answers-${ newId + 1}-1-text">
+                      </div>
+                      <div>
+                          <label for="id_answers-${ newId + 1}-1-is_correct" class="form-label">
+                            Правильный ли ответ
+                          </label>
+                          <input type="checkbox" name="answers-${ newId + 1}-1-is_correct" class="form-check-input" id="id_answers-${ newId + 1}-1-is_correct">
+                      </div>
+                  </div>
+              </div>
+            <button type="button" data-id="${ newId + 1}" onclick="addAnswer(${ newId + 1})" id="add-answer-form" class="btn btn-primary">Добавить ответ</button>
+          </div>`
+        block.append(newEl);
+        document.getElementById(`id_tasks-TOTAL_FORMS`).value = newId + 1;
+      }
+  </script>
+{% endblock content %}

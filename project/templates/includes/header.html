@@ -1,0 +1,24 @@
+<header class="container border-bottom d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4">
+  <div class="col-md-3 mb-2 mb-md-0">
+    <a href="/" class="d-inline-flex link-body-emphasis text-decoration-none">
+      <svg class="bi" width="40" height="32" role="img" aria-label="Bootstrap"><use xlink:href="#bootstrap"></use></svg>
+    </a>
+  </div>
+
+  <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
+    <li class="px-2 nav-item"><a href="{% url "homepage:home" %}" class="nav-link {% if request.resolver_match.view_name == "homepage:home" %}link-secondary{% endif %}">Главная страница</a></li>
+    <li class="px-2 nav-item"><a href="{% url "about:about" %}" class="nav-link {% if request.resolver_match.view_name == "about:about" %}link-secondary{% endif %}">О сайте</a></li>
+    <li class="px-2 nav-item"><a href="{% url "events:events_list" %}" class="nav-link {% if request.resolver_match.view_name == "events:events_list" %}link-secondary{% endif %}">Мероприятия</a></li>
+    <li class="px-2 nav-item"><a href="{% url "feedback:feedback" %}" class="nav-link {% if request.resolver_match.view_name == "feedback:feedback" %}link-secondary{% endif %}">Оставить отзыв</a></li>
+  </ul>
+
+  <div class="col-md-3 text-end pe-5">
+    {% if request.user.is_authenticated %}
+      <a href="{% url "users:profile" request.user.username %}" class="text-decoration-none px-2 {% if request.resolver_match.view_name == "users:profile" %}link-secondary{% endif %}">{{ request.user.username }}</a>
+      <a href="{% url "users:logout" %}" class="btn btn-primary">Выйти</a>
+    {% else %}
+      <a href="{% url "users:login" %}" class="btn btn-outline-primary">Войти</a>
+      <a href="{% url "users:signup" %}" class="btn btn-primary">Регистрация</a>
+    {% endif %}
+  </div>
+</header>

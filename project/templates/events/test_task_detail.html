@@ -1,0 +1,62 @@
+{% load static %}
+{% load widget_tweaks %}
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static "css/bootstrap.min.css" %}">
+    <title>{{ event_name }}</title>
+</head>
+<body>
+    <div class="fixed-top p-3">
+        <a href="{% url "events:event_detail" "testwork" test_name.slug %}">
+            <img src="{% static "img/exit.png" %}" alt="exit" width=50>
+        </a>
+    </div>
+    <div class="container pt-4" style="padding-bottom: 90px;">
+        {% for message in messages %}
+            <div class="alert alert-success" role="alert">
+                {{ message }}
+            </div>
+        {% endfor %}
+        <h1 class="text-center">{{ test_name }}</h1>
+        <div class="text-center">
+            {% for tag in tags %}
+                <span class="badge bg-primary">{{ tag.name }}</span>
+            {% endfor %}
+        </div>
+        <div class="fs-4">
+            <p>{{ task.text }}</p>
+            <form enctype="multipart/form-data" method="post">
+                {% csrf_token %}
+                {{ answer_formset.management_form }}
+                {% for answer in answer_formset %}
+                    {% for field in answer %}
+                        <div>
+                            {{ field|add_class:"form-check-input" }}
+                            <label for="{{ field.id_for_label }}" class="form-label">
+                            {{ field.label }}
+                            </label>
+                        </div>
+                    {% endfor %}
+                {% endfor %}
+                <div class="footer fixed-bottom d-flex justify-content-center flex-column py-2 bg-white" role="toolbar">
+                    <button type="submit" class="d-grid gap-2 col-3 btn btn-primary mx-auto" name="save_task">Сохранить</button>
+                    <div class="mx-auto pt-1">
+                        <div class="btn-group me-2" role="group">
+                            {% for task_num in tasks %}
+                                <a href="{% url "events:event_testwork_task" test_name.slug forloop.counter %}" type="button" class="btn {% if task_num.1 == True %}btn-outline-primary{% endif %}">{{ forloop.counter }}</a>
+                            {% endfor %}
+                        </div>
+                        <button type="submit" class="btn btn-primary" name="end_event">Завершить</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+<script src="{% static "js/bootstrap.bundle.min.js" %}"></script>
+</html>

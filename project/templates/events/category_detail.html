@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block title %}{{ category.name }}{% endblock title %}
+
+{% block content %}
+    <div class="container">
+        <h1 class="text-center">{{ category.name }}</h1>
+        {{ category.description }}
+    </div>
+{% endblock content %}

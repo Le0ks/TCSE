@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% load widget_tweaks %}
+
+{% block title %}{% endblock title %}
+
+{% block content %}
+    <div class="container">
+        <h1 class="text-center">{{ event.name }}</h1>
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a class="nav-link {% if request.resolver_match.view_name == "events:event_detail" %}active{% endif %}" aria-current="page" href="{{ event.get_absolute_url }}">Описание</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if request.resolver_match.view_name == "events:event_result" %}active{% endif %}" href="{{ event.get_result_url }}">Результаты</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if request.resolver_match.view_name == "events:event_rating" %}active{% endif %}" href="{{ event.get_rating_url }}">Рейтинг</a>
+            </li>
+        </ul>
+        <div class="row gy-3 py-2">
+            {% for task in tasks %}
+                <div class="col-12 align-items-stretch">
+                    <div class="card">
+                        <div class="card-body">
+                            <h3 class="card-title text-center">Задание {{ forloop.counter }}</h3>
+                            <p class="lead fs-4">{{ task.0 }}</p>
+                            <div class="text-center">
+                                {% for tag in task.1 %}
+                                    <span class="badge bg-primary">{{ tag.name }}</span>
+                                {% endfor %}
+                            </div>
+                            <div class="fs-4">
+                                {% for answer in task.2 %}
+                                    {% for field in answer.0 %}
+                                        <div>
+                                            {% if answer.1 == 0 %}
+                                                {{ field|add_class:"form-check-input bg-success border border-success" }}
+                                                <label for="{{ field.id_for_label }}" class="form-label text-success">
+                                                    {{ field.label }}
+                                                </label>
+                                            {% elif answer.1 == 1 %}
+                                                {{ field|add_class:"form-check-input bg-danger border border-danger" }}
+                                                    <label for="{{ field.id_for_label }}" class="form-label text-danger">
+                                                        {{ field.label }}
+                                                    </label>
+                                            {% else %}
+                                                {{ field|add_class:"form-check-input" }}
+                                                <label for="{{ field.id_for_label }}" class="form-label">
+                                                    {{ field.label }}
+                                                </label>
+                                            {% endif %}
+                                        </div>
+                                    {% endfor %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock content %}
