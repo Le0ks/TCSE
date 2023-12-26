@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block title %}{{ user.username }}{% endblock title %}
+
+{% block content %}
+  <h2 class="fw-bold display-6">
+    {{ user.username }}
+  </h2>
+  {% with request.resolver_match.view_name as view_name %}
+    <ul class="nav nav-tabs mb-4">
+      <li class="nav-item">
+        <a class="nav-link {% if view_name == "users:profile" %}active{% else %}text-dark{% endif %}" {% if view_name == "users:profile" %}aria-current="page"{% endif %} href="{% url "users:profile" request.resolver_match.kwargs.username %}">Профиль</a>
+      </li>
+      {% if request.user.username == request.resolver_match.kwargs.username %}
+        <li class="nav-item">
+          <a class="nav-link {% if view_name == "users:profile_change" %}active{% else %}text-dark{% endif %}" {% if view_name == "users:profile_change" %}aria-current="page"{% endif %} href="{% url "users:profile_change" request.resolver_match.kwargs.username %}">Изменить профиль</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% if view_name == "users:password_change" %}active{% else %}text-dark{% endif %}" {% if view_name == "users:password_change" %}aria-current="page"{% endif %} href="{% url "users:password_change" request.resolver_match.kwargs.username %}">Изменить пароль</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% if view_name == "users:password_reset" %}active{% else %}text-dark{% endif %}" {% if view_name == "users:password_reset" %}aria-current="page"{% endif %} href="{% url "users:password_reset" request.resolver_match.kwargs.username %}">Восстановление пароля</a>
+        </li>
+      {% endif %}
+    </ul>
+  {% endwith %}
+  {% block user_page %}{% endblock user_page %}
+{% endblock content %}

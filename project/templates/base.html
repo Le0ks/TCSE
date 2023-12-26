@@ -6,15 +6,32 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{% static "css/bootstrap.min.css" %}">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'favicon/apple-touch-icon.png' %}" />
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'favicon/favicon-32x32.png' %}" />
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'favicon/favicon-16x16.png' %}" />
+    <link rel="manifest" href="{% static 'favicon/site.webmanifest' %}" />
+    <link rel="stylesheet" href="{% static "css/bootstrap.css" %}">
+    <link rel="stylesheet" href="{% static "css/style.css" %}">
     <title>{% block title %}{% endblock title %}</title>
-    {% block script %}{% endblock script %}
+    {% block script_head %}{% endblock script_head %}
 </head>
 <body>
-    {% include "includes/header.html" %}
-    {% block content %}
-    {% endblock content %}
-    {% include "includes/footer.html" %}
+    {% include "includes/aside.html" %}
+    <div class="wrapper">
+        {% include "includes/header.html" %}
+        <main class="container-xl d-flex flex-column mb-2">
+            {% for message in messages %}
+                <div class="alert {{ message.tags }} alert-dismissible" role="alert">
+                    {{ message }}
+                </div>
+            {% endfor %}
+            {% block content %}
+            {% endblock content %}
+        </main>
+    </div>
 </body>
-<script src="{% static "js/bootstrap.bundle.min.js" %}"></script>
+<script src="{% static "js/bootstrap.js" %}"></script>
+<script src="{% static "js/main.js" %}"></script>
+{% block script %}{% endblock script %}
 </html>

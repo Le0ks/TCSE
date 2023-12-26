@@ -1,42 +1,40 @@
-{% extends "base.html" %}
+{% extends "users/base.html" %}
 
-{% block title %}Авторизация{% endblock title %}
+{% load static %}
+
+{% block title %}Войти{% endblock title %}
 
 {% block content %}
-    <div class="container text-center">
-        <h1>Авторизация</h1>
-        <form method="post"
-            enctype="multipart/form-data"
-            class="needs-validation"
-            novalidate>
-            {% csrf_token %}
-            {% for msg in messages %}
-                <div class="alert alert-primary" role="alert">
-                    {{ msg }}
-                </div>
-            {% endfor %}
-            {% if form.errors %}
-                {% for error in form.non_field_errors %}
-                    <div class="alert alert-danger">
-                        <strong>{{ error|escape }}</strong>
-                    </div>
-                {% endfor %}
-            {% endif %}
-            {% for field in form %}
-                <div class="mb-3">
-                    <label for="{{ field.id_for_label }}" class="form-label">
-                        {{ field.label }}
-                    </label>
-                    <div class="{% if field.errors %}is-invalid{% endif %}">{{ field }}</div>
-                    <div id="{{ field.html_name }}HelpText" class="form-text">{{ field.help_text }}</div>
-                    {% if form.errors %}
-                        {% for error in field.errors %}
-                            <div class="invalid-feedback">{{ error|escape }}</div>
-                        {% endfor %}
-                    {% endif %}
-                </div>
-            {% endfor %}
-            <button type="submit" class="btn btn-primary">Войти</button>
-        </form>
+  <div class="card custom_card">
+    <div class="card-body">
+      <h1 class="fs-1 mb-2 text-center"><a href="{% url "homepage:homepage" %}" class="nav-link">Добро пожаловать!</a></h1>
+      <div class="d-flex align-items-center justify-content-center fs-3">
+        <ul class="nav">
+          <li class="nav-item">
+            <a class="nav-link {% if request.resolver_match.view_name == "users:login" %}fw-custom{% endif %}" aria-current="page" href="{% url "users:login" %}">Войти</a>
+          </li>
+          <li class="nav-item">
+            <span class="nav-link px-0">|</span>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {% if request.resolver_match.view_name == "users:signup" %}fw-custom{% endif %}" href="{% url "users:signup" %}">Регистрация</a>
+          </li>
+        </ul>
+      </div>
+      <form method="post" enctype="multipart/form-data">
+        {% include "includes/make_form.html" %}
+        <div class="mt-2 d-flex justify-content-center w-100">
+          <button type="submit" class="btn btn-primary w-100">Войти</button>
+        </div>
+        <div class="mt-2 d-flex align-items-center justify-content-around">
+          <a href="{% url "social_auth:begin" "google-oauth2" %}">
+            <img width="38px" src="{% static "img/google.svg" %}" />
+          </a>
+          <a href="{% url "social_auth:begin" "yandex-oauth2" %}">
+            <img width="38px" src="{% static "img/yandex.svg" %}" />
+          </a>
+        </div>
+      </form>
     </div>
+  </div>
 {% endblock content %}

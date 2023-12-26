@@ -1,0 +1,9 @@
+{% autoescape off %}
+Здравствуйте, {{ username }}
+Чтобы активировать свой аккаунт, пожалуйста, пройдите по ссылке ниже:
+
+{{ protocol }}://{{ domain }}{% url where_to uidb64=uid token=token %}
+
+С уважением,
+Администрация сайта tcse.ru
+{% endautoescape %}

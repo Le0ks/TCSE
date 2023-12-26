@@ -1,6 +1,6 @@
 from django.contrib.admin import ModelAdmin, register
 
-from .models import Category, Event, EventResults, Tag, Answer, Task
+from .models import Answer, Category, Event, EventResults, Tag, Task
 
 
 @register(Event)

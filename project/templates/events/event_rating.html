@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}{{ event.name }}{% endblock title %}
+
+{% block content %}
+
+<h1 class="text-center fs-1">{{ event.name }}</h1>
+<ul class="nav nav-tabs mb-4">
+    <li class="nav-item">
+        <a class="nav-link {% if request.resolver_match.view_name == "events:event_detail" %}active{% endif %}" aria-current="page" href="{{ event.get_absolute_url }}">Описание</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link {% if request.resolver_match.view_name == "events:event_result" %}active{% endif %}" href="{{ event.get_result_url }}">Результаты</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link {% if request.resolver_match.view_name == "events:event_rating" %}active{% endif %}" href="{{ event.get_rating_url }}">Рейтинг</a>
+    </li>
+</ul>
+
+<table class="table">
+    <thead>
+      <tr>
+        <th scope="col">Место</th>
+        <th scope="col">Участник</th>
+        <th scope="col">Количество набранных баллов</th>
+      </tr>
+    </thead>
+    <tbody>
+        {% for event_result in event_results %}
+            <tr>
+                <th scope="row">{{ forloop.counter }}</th>
+                <td>{{ event_result.user }}</td>
+                <td>{{ event_result.number_of_points }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+  </table>
+
+{% endblock content %}

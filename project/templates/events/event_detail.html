@@ -5,43 +5,43 @@
 {% block title %}{{ event.name }}{% endblock title %}
 
 {% block content %}
-    <div class="container">
-        {% if user_can_access_event %}
-            <h1 class="text-center">{{ event.name }}</h1>
-            <ul class="nav nav-tabs mb-4">
-                <li class="nav-item">
-                    <a class="nav-link {% if request.resolver_match.view_name == "events:event_detail" %}active{% endif %}" aria-current="page" href="{{ event.get_absolute_url }}">Описание</a>
-                </li>
+    {% if user_can_access_event %}
+        <h1 class="text-center fs-1">{{ event.name }}</h1>
+        <ul class="nav nav-tabs mb-4">
+            <li class="nav-item">
+                <a class="nav-link {% if request.resolver_match.view_name == "events:event_detail" %}active{% endif %}" aria-current="page" href="{{ event.get_absolute_url }}">Описание</a>
+            </li>
+            {% if end_event %}
                 <li class="nav-item">
                     <a class="nav-link {% if request.resolver_match.view_name == "events:event_result" %}active{% endif %}" href="{{ event.get_result_url }}">Результаты</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link {% if request.resolver_match.view_name == "events:event_rating" %}active{% endif %}" href="{{ event.get_rating_url }}">Рейтинг</a>
                 </li>
-            </ul>
-            <p class="lead fs-5">Описание: {{ event.description }}</p>
-            <p class="lead fs-5">Организатор: <span class="badge bg-info text-dark">{{ event.author }}</span></p>
-            {% if event.type_by_time == 1 %}
-                <p class="lead fs-5">Продолжительность: {{ event.duration }}</p>
-            {% elif event.type_by_time == 2 %}
-                <p class="lead fs-5">Начало: {{ event.start_time }}</p>
-                <p class="lead fs-5">Конец: {{ event.finish_time }}</p>
-            {% elif event.type_by_time == 3 %}
-                <p class="lead fs-5">Начало: {{ event.start_time }}</p>
-                <p class="lead fs-5">Конец: {{ event.finish_time }}</p>
-                <p class="lead fs-5">Продолжительность в минутах: {{ event.duration }}</p>
             {% endif %}
-            {% with event.category.slug|get_url_for_task_category as url_category %}
-                {% if user_is_unregistered_on_event %}
-                    <div><a href="{% url "events:event_registration" event.category.slug event.slug %}" class="btn btn-primary">Зарегистрироваться</a></div>
-                {% elif not end_event %}
-                        <div>
-                            <a href="{% url url_category event.slug 1 %}" class="btn btn-primary">Войти</a>
-                        </div>
-                {% else %}
-                    <h4 class="lead fs-5">Вы завершили это мероприятие!</h4>
-                {% endif %}
-            {% endwith %}
+        </ul>
+        <p class="lead fs-5">Описание: {{ event.description }}</p>
+        <p class="lead fs-5">Организатор: <span class="badge bg-info text-dark">{{ event.author }}</span></p>
+        {% if event.type_by_time == 1 %}
+            <p class="lead fs-5">Продолжительность: {{ event.duration }}</p>
+        {% elif event.type_by_time == 2 %}
+            <p class="lead fs-5">Начало: {{ event.start_time }}</p>
+            <p class="lead fs-5">Конец: {{ event.finish_time }}</p>
+        {% elif event.type_by_time == 3 %}
+            <p class="lead fs-5">Начало: {{ event.start_time }}</p>
+            <p class="lead fs-5">Конец: {{ event.finish_time }}</p>
+            <p class="lead fs-5">Продолжительность в минутах: {{ event.duration }}</p>
         {% endif %}
-    </div>
+        {% with event.category.slug|get_url_for_task_category as url_category %}
+            {% if user_is_unregistered_on_event %}
+                <div><a href="{% url "events:event_registration" event.category.slug event.slug %}" class="btn btn-primary">Зарегистрироваться</a></div>
+            {% elif not end_event %}
+                    <div>
+                        <a href="{% url url_category event.slug 1 %}" class="btn btn-primary">Войти</a>
+                    </div>
+            {% else %}
+                <h4 class="lead fs-5">Вы завершили это мероприятие!</h4>
+            {% endif %}
+        {% endwith %}
+    {% endif %}
 {% endblock content %}

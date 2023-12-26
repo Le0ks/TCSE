@@ -1,0 +1,54 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="{% static "css/bootstrap.css" %}">
+    <link rel="stylesheet" href="{% static "css/style.css" %}">
+    <title>TCSE</title>
+</head>
+<body>
+    <div class="block">
+        <img class="background" src="{% static "img/background.jpg" %}" alt="">
+        <button class="btn btn-outline-light btn-lg px-5 d-block m-auto" onclick="location.href='{% url "homepage:home" %}';">
+            Начнем
+        </button>
+        <header class="mt-2">
+            <div class="me-3">
+              {% if request.user.is_authenticated %}
+                <a href="{% url "users:profile" request.user.username %}" class="fs-4 text-decoration-none px-2 link-secondary">{{ request.user.username }}</a>
+                <a href="{% url "users:logout" %}" class="text-decoration-none fs-4">Выйти</a>
+              {% else %}
+                <a href="{% url "users:login" %}" class="text-decoration-none fs-4">Войти</a>
+                <a href="{% url "users:signup" %}" class="text-decoration-none fs-4">Регистрация</a>
+              {% endif %}
+            </div>
+          </header>
+    </div>
+    {% if news %}
+        <div class="container-xl">
+            <h2 class="mt-3">Новости</h2>
+            <div class="row">
+                {% for new in news %}
+                    <div class="col-12 col-xl-4 col-md-6 col-sm-12 gy-3">
+                        <div class="card custom-card h-100">
+                            <img src="{{ new.image.url }}" alt="{{ new.name }}" class="card-img-top">
+                            <div class="card-body">
+                                <h3 class="card-title">{{ new.name }}</h3>
+                                <p class="card-text">{{ new.text }}</p>
+                            </div>
+                        </div>
+                    </div>
+                {% empty %}
+                    <p class="lead fs-3">Новостей нет</p>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+</body>
+<script src="{% static "js/bootstrap.js" %}"></script>
+<script src="{% static "js/main.js" %}"></script>
+</html>

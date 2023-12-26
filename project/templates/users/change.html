@@ -1,0 +1,12 @@
+{% extends "users/detail.html" %}
+
+{% load static %}
+
+{% block user_page %}
+  <form method="post" enctype="multipart/form-data">
+    {% for form in forms %}
+      {% include "includes/make_form.html" %}
+    {% endfor %}
+    <button type="submit" class="btn btn-primary mt-2">Сохранить</button>
+  </form>
+{% endblock user_page %}

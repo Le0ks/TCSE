@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% load widget_tweaks %}
+{% load static %}
+{% block title %}Feedback{% endblock title %}
+
+{% block content %}
+    <h1 class="fs-1 text-center mb-3">Оставить отзыв:</h1>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {% for field in form %}
+            {% render_field field class="form-control mb-3" placeholder=field.help_text %}
+        {% endfor %}
+        <button type="submit" class="btn btn-primary d-grid gap-2 col-6 mx-auto">Отправить</button>
+    </form>
+{% endblock content %}
+{% block script %}
+  <script>
+    var textareas = document.querySelectorAll("textarea");
+
+    for (var i = 0; i < textareas.length; i++) {
+        textareas[i].addEventListener("keydown", autosize);
+    }
+
+    function autosize(){
+    var el = this;
+    setTimeout(function(){
+        el.style.cssText = "height: 1rem";
+        el.style.cssText = "height:" + el.scrollHeight + "px !important";
+    }, 0);
+    }
+  </script>
+{% endblock script %}

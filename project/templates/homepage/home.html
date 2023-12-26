@@ -3,31 +3,62 @@
 {% block title %}Главная страница{% endblock title %}
 
 {% block content %}
-    <div class="container">
-        {% for message in messages %}
-            <div class="alert alert-success" role="alert">
-                {{ message }}
-            </div>
-        {% endfor %}
-        <div class="card mx-5">
-            <h1 class="card-title text-center py-2">Инструмент для создания и проведения учебных мероприятий и работ</h1>
-        </div>
-        <div class="py-3">
-            <h2>Новости</h2>
-            <div class="row gy-3">
-                {% for new in news %}
-                    <div class="col-4 d-flex align-items-stretch">
-                        <div class="card">
-                            <img src="{{ new.image.url }}" alt="{{ new.name }}" class="card-img-top">
-                            <div class="card-body">
-                                <h3 class="card-title">{{ new.name }}</h3>
-                                <p class="card-text">{{ new.text }}</p>
-                            </div>
-                        </div>
+    <h1 class="fs-1">Мои мероприятия</h2>
+    <div class="row">
+        {% for event in events %}
+            <div class="col-12 col-xl-4 col-md-6 col-sm-12 gy-3">
+                <div class="card custom-card h-100" onclick="location.href='{% url "events:event_detail" event.category.slug event.slug %}';">
+                    {% if event.image %}
+                        <img src="" alt="" class="card-img-top">
+                    {% endif %}
+                    <div class="card-body">
+                        <h3 class="card-title text-center">{{ event.name }}</h3>
+                        <p class="card-text fs-4">{{ event.description|truncatechars:50 }}</p>
+                        <p class="lead">Организатор: <span class="badge bg-info text-dark">{{ event.author }}</span></p>
+                        {% if event.type_by_time == 1 %}
+                            <p class="lead">Продолжительность: {{ event.duration }}</p>
+                        {% elif event.type_by_time == 2 %}
+                            <p class="lead">Начало: {{ event.start_time }}</p>
+                            <p class="lead">Конец: {{ event.finish_time }}</p>
+                        {% elif event.type_by_time == 3 %}
+                            <p class="lead">Начало: {{ event.start_time }}</p>
+                            <p class="lead">Конец: {{ event.finish_time }}</p>
+                            <p class="lead">Продолжительность: {{ event.duration }}</p>
+                        {% endif %}
                     </div>
-                {% endfor %}
+                </div>
             </div>
-        </div>
-        
+        {% empty %}
+            <p class="lead fs-3">Вы ещё не создали ни одного мероприятия</p>
+        {% endfor %}
+    </div>
+    <h1 class="fs-1 mt-2">Мероприятия, в которых я принял участие</h2>
+    <div class="row">
+        {% for result in event_results %}
+            <div class="col-12 col-xl-4 col-md-6 col-sm-12 gy-3">
+                <div class="card custom-card h-100" onclick="location.href='{% url "events:event_detail" result.event.category.slug result.event.slug %}';">
+                    {% if result.event.image %}
+                        <img src="" alt="" class="card-img-top">
+                    {% endif %}
+                    <div class="card-body">
+                        <h3 class="card-title text-center">{{ result.event.name }}</h3>
+                        <p class="card-text fs-4">{{ result.event.description|truncatechars:50 }}</p>
+                        <p class="lead">Организатор: <span class="badge bg-info text-dark">{{ result.event.author }}</span></p>
+                        {% if result.event.type_by_time == 1 %}
+                            <p class="lead">Продолжительность: {{ result.event.duration }}</p>
+                        {% elif result.event.type_by_time == 2 %}
+                            <p class="lead">Начало: {{ result.event.start_time }}</p>
+                            <p class="lead">Конец: {{ result.event.finish_time }}</p>
+                        {% elif result.event.type_by_time == 3 %}
+                            <p class="lead">Начало: {{ result.event.start_time }}</p>
+                            <p class="lead">Конец: {{ result.event.finish_time }}</p>
+                            <p class="lead">Продолжительность: {{ result.event.duration }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <p class="lead fs-3">Вы ещё не приняли участие ни в одном мероприятии</p>
+        {% endfor %}
     </div>
 {% endblock content %}

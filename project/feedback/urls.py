@@ -1,10 +1,10 @@
 from django.urls import path
 
-from .views import index
+from .views import FeedbackView
 
 
 app_name = "feedback"
 
 urlpatterns = [
-    path("", index, name="feedback"),
+    path("", FeedbackView.as_view(), name="feedback"),
 ]

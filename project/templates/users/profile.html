@@ -1,10 +1,16 @@
-{% extends "base.html" %}
+{% extends "users/detail.html" %}
 
-{% block title %}{{ username }}{% endblock title %}
+{% load static %}
 
-{% block content %}
-    <div class="container text-center">
-        <h1>{{ username }}</h1>
-        {{ user.firstname }} {{ user.lastname }}
+{% block user_page %}
+  <div class="row flex-lg-row-reverse align-items-center justify-content-center">
+    <div class="col-10 col-sm-8 col-lg-6">
+      <img src="{% if user.profile.image %}{{ user.profile.image.url }}{% else %}{% static "img/default_user.png" %}{% endif %}" class="img-fluid border rounded-3 shadow-lg " width="100%" height="auto" alt="главная картинка"/>
     </div>
-{% endblock content %}
+    <div class="col-lg-6">
+      {% if request.user.id == user.pk or request.user.is_staff %}<p class="lead"><span class="fw-bold">Почта: {{ user.email }}</span></p>{% endif %}
+      <p class="lead"><span class="fw-bold">Имя: {% if user.first_name %}{{ user.first_name }}{% else %}не указано{% endif %}</span></p>
+      <p class="lead"><span class="fw-bold">Фамилия: {% if user.last_name %}{{ user.last_name }}{% else %}не указано{% endif %}</span></p>
+    </div>
+  </div>
+{% endblock user_page %}

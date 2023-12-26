@@ -1,0 +1,68 @@
+<aside>
+    <div class="logo-details">
+        <i class='bx bx-code-alt' onclick="location.href='{% url "homepage:homepage" %}';"></i>
+        <span class="logo_name" onclick="location.href='{% url "homepage:homepage" %}';">TCSE</span>
+        <i class='bx bx-chevron-left' style='color:#ffffff'></i>
+    </div>
+    <ul class="nav-links">
+        <li>
+            <a href="{% url "homepage:home" %}">
+                <i class='bx bx-home-alt'></i>
+                <span class="link_name">Home</span>
+            </a>
+        </li>
+        <li>
+            <a href="{% url "about:about" %}">
+                <i class='bx bx-search-alt-2' style='color:#ffffff'></i>
+                <span class="link_name">About</span>
+            </a>
+        </li>
+        <li>
+            <div class="icon-link">
+                <a href="{% url "list_of_category" %}">
+                    <i class='bx bx-food-menu'></i>
+                    <span class="link_name">Categories</span>
+                </a>
+                <i class='bx bx-chevron-down arrow'></i>
+            </div>
+            <ul class="sub-menu">
+                <li><a href="{% url "category_detail" "testwork" %}">Testwork</a></li>
+                <li><a href="{% url "category_detail" "written_work" %}">Written work</a></li>
+                <li><a href="{% url "category_detail" "mixed_work" %}">Mixed work</a></li>
+            </ul>
+        </li>
+        <li>
+            <a href="{% url "events:list_of_events" %}">
+                <i class='bx bx-book-alt' ></i>
+                <span class="link_name">Events</span>
+            </a>
+        </li>
+        <li>
+            <div class="icon-link">
+                <a href="{% url "events:create_event" %}">
+                    <i class='bx bx-plus'></i>
+                    <span class="link_name">Create</span>
+                </a>
+                <i class='bx bx-chevron-down arrow'></i>
+            </div>
+            <ul class="sub-menu">
+                <li><a href="{% url "events:create_test" %}">Testwork</a></li>
+                <li><a href="{% url "events:create_written_work" %}">Written work</a></li>
+                <li><a href="{% url "events:create_mixed_work" %}">Mixed work</a></li>
+            </ul>
+        </li>
+        <li>
+            <a href="{% url "events:event_connect" %}">
+                <i class='bx bx-lock-alt' style='color:#ffffff' ></i>
+                <span class="link_name">Connect</span>
+            </a>
+        </li>
+        <li>
+            <a href="{% url "feedback:feedback" %}">
+                <i class='bx bx-message-dots'></i>
+                <span class="link_name">Feedback</span>
+            </a>
+        </li>
+    </ul>
+    <i class='bx bx-x' style='color:#ffffff'></i>
+</aside>
