@@ -4,13 +4,13 @@
 
 {% block content %}
     <h1 class="text-center">{{ category.name }}</h1>
-    <div class="row m-auto">
-        <div class="col">
+    <div class="row">
+        <div class="col-12 col-md">
             <p class="lead fs-4">{{ category.description }}</p>
         </div>
-        <div class="col">
+        <div class="col-12 col-md">
             {% if category.image %}
-                <img src="{{ category.image.url }}" alt="">        
+                <img src="{{ category.image.url }}" alt="" class="w-100">        
             {% endif %}
         </div>
     </div>
