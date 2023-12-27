@@ -25,12 +25,12 @@ urlpatterns = [
     path("create/testwork/", CreateTestView.as_view(), name="create_test"),
     path(
         "create/written_work/",
-        CreateWrittenWorkView.as_view(),
+        EventListView.as_view(),
         name="create_written_work",
     ),
     path(
         "create/mixed_work/",
-        CreateMixedWorkView.as_view(),
+        EventListView.as_view(),
         name="create_mixed_work",
     ),
     path(
@@ -50,12 +50,12 @@ urlpatterns = [
     ),
     path(
         "writtten_work/<slug:event_name>/<int:number_of_task>",
-        WrittenWorkTasksDetailView.as_view(),
+        EventListView.as_view(),
         name="event_written_work_task",
     ),
     path(
         "mixed_work/<slug:event_name>/<int:number_of_task>",
-        MixedWorkTasksDetailView.as_view(),
+        EventListView.as_view(),
         name="event_mixed_work_task",
     ),
     path(
