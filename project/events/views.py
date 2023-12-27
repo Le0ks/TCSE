@@ -517,3 +517,7 @@ class EventConnectView(LoginRequiredMixin, FormView):
                 )
             )
         return super().form_valid(form)
+
+
+class BlankView(LoginRequiredMixin, TemplateView):
+    template_name = "events/blank.html"
