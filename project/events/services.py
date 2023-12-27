@@ -2,12 +2,18 @@ from .models import EventResults
 
 
 def user_can_access_event(event_obj, user):
-    return not event_obj.is_private or (
-        event_obj.is_private
-        and EventResults.objects.filter(event=event_obj, user=user).exists()
-        and EventResults.objects.get(
-            event=event_obj, user=user
-        ).is_correct_secret_key
+    return (
+        not event_obj.is_private
+        or (
+            event_obj.is_private
+            and EventResults.objects.filter(
+                event=event_obj, user=user
+            ).exists()
+            and EventResults.objects.get(
+                event=event_obj, user=user
+            ).is_correct_secret_key
+        )
+        or (event_obj.is_private and event_obj.author == user)
     )
 
 

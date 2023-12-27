@@ -99,7 +99,7 @@
                       {% with forloop.counter as number %}
                         {% for field in answer %}
                           {% if field.name == "is_correct" %}
-                              <div class="d-flex align-items-center flex-nowrap">
+                              `<div class="d-flex align-items-center flex-nowrap">
                                 {{ field|add_class:"form-check-input my-0 mx-2" }}
                                 <label for="{{ field.id_for_label }}" class="form-label text-nowrap m-0">
                                   {{ field.label }}

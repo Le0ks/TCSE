@@ -26,14 +26,14 @@
         <div class="mt-2 d-flex justify-content-center w-100">
           <button type="submit" class="btn btn-primary w-100">Войти</button>
         </div>
-        <div class="mt-2 d-flex align-items-center justify-content-around">
+        {% comment %} <div class="mt-2 d-flex align-items-center justify-content-around">
           <a href="{% url "social_auth:begin" "google-oauth2" %}">
             <img width="38px" src="{% static "img/google.svg" %}" />
           </a>
           <a href="{% url "social_auth:begin" "yandex-oauth2" %}">
             <img width="38px" src="{% static "img/yandex.svg" %}" />
           </a>
-        </div>
+        </div> {% endcomment %}
       </form>
     </div>
   </div>

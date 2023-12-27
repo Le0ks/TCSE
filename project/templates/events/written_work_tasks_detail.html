@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% load static %}
+{% load widget_tweaks %}
+
+{% block title %}{{ event.name }}{% endblock title %}
+
+{% block content %}
+    <a href="{% url "events:event_detail" event.category.slug event.slug %}">
+        <i class='bx bx-exit bx-rotate-180 fs-1'></i>
+    </a>
+    <h1 class="text-center">{{ event.name }}</h1>
+    <div class="text-center">
+        {% for tag in tags %}
+            <span class="badge bg-primary">{{ tag.name }}</span>
+        {% endfor %}
+    </div>
+    <p>{{ task.text }}</p>
+    <form enctype="multipart/form-data" method="post" class="flex-grow-1 d-flex flex-column justify-content-between">
+        {% csrf_token %}
+        {{ answer_formset.management_form }}
+        <div>
+            {% for answer in answer_formset %}
+                {% for field in answer %}
+                    <div>
+                        {{ field|add_class:"form-check-input" }}
+                        <label for="{{ field.id_for_label }}" class="form-label">
+                        {{ field.label }}
+                        </label>
+                    </div>
+                {% endfor %}
+            {% endfor %}
+        </div>
+        <div class="mx-auto">
+            <button type="submit" class="btn btn-primary w-100" name="save_task">Сохранить</button>
+            <div class="pt-2 d-flex align-items-center">
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination my-0 me-2">
+                        {% for task_num in tasks %}
+                            <li class="page-item {% if request.resolver_match.view_name == "events:event_testwork_task" and request.resolver_match.kwargs.event == event.slug and request.resolver_match.kwargs.number_of_task == forloop.counter%}active{% endif %}"><a href="{% url "events:event_testwork_task" event.slug forloop.counter %}" type="button" class="page-link">{{ forloop.counter }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </nav>
+                <button type="submit" class="btn btn-primary" name="end_event">Завершить</button>
+            </div>
+        </div>
+    </form>
+{% endblock content %}

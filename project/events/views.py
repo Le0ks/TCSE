@@ -49,7 +49,7 @@ class CategoryDetailView(LoginRequiredMixin, DetailView):
 
 
 class EventListView(LoginRequiredMixin, ListView):
-    model = Event
+    queryset = Event.objects.filter(is_private=False)
     template_name = "events/list_of_events.html"
     context_object_name = "events"
 
@@ -219,21 +219,7 @@ class EventTasksDetailView(LoginRequiredMixin):
         ]
         context["tags"] = Tag.objects.filter(task=context["task"])
         answers_obj = Answer.objects.filter(task=context["task"])
-        answer_formset = formset_factory(
-            UserAnswerForm,
-            extra=len(answers_obj),
-            max_num=len(answers_obj),
-            min_num=len(answers_obj),
-        )(
-            initial=[
-                {"is_correct": user_answers.is_correct}
-                for user_answers in UserAnswer.objects.filter(
-                    answer__task=context["task"], user=self.request.user
-                )
-            ]
-        )
-        for index, answer in enumerate(answers_obj):
-            answer_formset[index].fields["is_correct"].label = answer.text
+        answer_formset = self.get_answer_formset(answers_obj, context)
         context["answer_formset"] = answer_formset
         return self.render_to_response(context)
 
@@ -248,9 +234,7 @@ class EventTasksDetailView(LoginRequiredMixin):
         ]
         context["tags"] = Tag.objects.filter(task=context["task"])
         answers_obj = Answer.objects.filter(task=context["task"])
-        answer_formset = formset_factory(UserAnswerForm)(
-            self.request.POST or None
-        )
+        answer_formset = self.post_answer_formset()
         tasks = []
         for task in Task.objects.filter(event=context["event"]):
             if UserAnswer.objects.filter(
@@ -265,27 +249,47 @@ class EventTasksDetailView(LoginRequiredMixin):
             for index, answer in enumerate(answers_obj):
                 answer_formset[index].fields["is_correct"].label = answer.text
                 if answer_formset[index].fields["is_correct"].label == str(
-                    UserAnswer.objects.get(
+                    UserAnswer.objects.filter(
                         answer=answer, user=self.request.user
-                    )
+                    ).first()
                 ):
-                    if UserAnswer.objects.get(answer=answer).is_correct:
+                    if (
+                        UserAnswer.objects.get(
+                            answer=answer, user=self.request.user
+                        ).is_correct
+                        and not answer_formset[index]["is_correct"].data
+                    ):
                         context[
                             "event_result"
                         ].number_of_points -= answer.task.number_of_points
-                    UserAnswer.objects.filter(answer=answer).update(
-                        is_correct=answer_formset[index]["is_correct"].data
-                    )
-                    if UserAnswer.objects.get(answer=answer).is_correct:
+                    if (
+                        not UserAnswer.objects.get(
+                            answer=answer, user=self.request.user
+                        ).is_correct
+                        and answer_formset[index]["is_correct"].data
+                    ):
                         context[
                             "event_result"
                         ].number_of_points += answer.task.number_of_points
+                    UserAnswer.objects.filter(
+                        answer=answer, user=self.request.user
+                    ).update(
+                        is_correct=answer_formset[index]["is_correct"].data
+                    )
+                    context["event_result"].save()
                 else:
                     UserAnswer.objects.create(
                         user=self.request.user,
                         answer=answer,
                         is_correct=answer_formset[index]["is_correct"].data,
                     )
+                    if UserAnswer.objects.get(
+                        answer=answer, user=self.request.user
+                    ).is_correct:
+                        context[
+                            "event_result"
+                        ].number_of_points += answer.task.number_of_points
+                        context["event_result"].save()
             success(self.request, "Сохранено")
             return self.render_to_response(context)
         if self.request.POST.get("end_event") is not None:
@@ -300,17 +304,78 @@ class EventTasksDetailView(LoginRequiredMixin):
             ).update(is_ended=True)
             return redirect(reverse("homepage:home"))
 
+    def get_answer_formset(self, answerobj, context):
+        return
+
+    def post_answer_formset(self):
+        return
+
 
 class TestTasksDetailView(EventTasksDetailView, TemplateView):
     template_name = "events/test_tasks_detail.html"
+
+    def get_answer_formset(self, answers_obj, context):
+        answer_formset = formset_factory(
+            UserAnswerForm,
+            extra=len(answers_obj),
+            max_num=len(answers_obj),
+            min_num=len(answers_obj),
+        )(
+            initial=[
+                {"text": user_answers.is_correct}
+                for user_answers in UserAnswer.objects.filter(
+                    answer__task=context["task"],
+                    user=self.request.user,
+                )
+            ]
+        )
+        for index, answer in enumerate(answers_obj):
+            answer_formset[index].fields["is_correct"].label = answer.text
+        return answer_formset
+
+    def post_answer_formset(self):
+        return formset_factory(UserAnswerForm)(
+                self.request.POST or None
+            )
 
 
 class WrittenWorkTasksDetailView(EventTasksDetailView, TemplateView):
     template_name = "events/written_work_tasks_detail.html"
 
+    def get_answer_formset(self, answers_obj, context):
+        answer_formset = formset_factory(
+            UserAnswerForm,
+            extra=len(answers_obj),
+            max_num=len(answers_obj),
+            min_num=len(answers_obj),
+        )(
+            initial=[
+                {"text": user_answers.is_correct}
+                for user_answers in UserAnswer.objects.filter(
+                    answer__task=context["task"],
+                    user=self.request.user,
+                )
+            ]
+        )
+        for index, answer in enumerate(answers_obj):
+            answer_formset[index].fields["is_correct"].label = answer.text
+        return answer_formset
+
+    def post_answer_formset(self):
+        return UserAnswerForm(self.request.POST or None)
+
 
 class MixedWorkTasksDetailView(EventTasksDetailView, TemplateView):
     template_name = "events/mixed_work_tasks_detail.html"
+
+    def get_answer_formset(self, answers_obj, context):
+        answer_formset = UserAnswerForm()
+        for index, answer in enumerate(answers_obj):
+            answer_formset[index].fields["is_correct"].label = answer.text
+        return answer_formset
+
+    def post_answer_formset(self):
+        return UserAnswerForm(self.request.POST or None)
 
 
 class EventRegistrationView(LoginRequiredMixin, View):
@@ -318,9 +383,9 @@ class EventRegistrationView(LoginRequiredMixin, View):
         event_obj = get_object_or_404(
             Event, slug=event_name, is_published=True
         )
-        if user_can_access_event(event_obj) and user_is_unregistered_on_event(
+        if user_can_access_event(
             event_obj, request.user
-        ):
+        ) and user_is_unregistered_on_event(event_obj, request.user):
             EventResults.objects.create(
                 event=event_obj,
                 user=request.user,

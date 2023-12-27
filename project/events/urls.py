@@ -11,7 +11,9 @@ from .views import (
     EventRatingView,
     EventRegistrationView,
     EventResultView,
+    MixedWorkTasksDetailView,
     TestTasksDetailView,
+    WrittenWorkTasksDetailView,
 )
 
 
@@ -45,6 +47,16 @@ urlpatterns = [
         "testwork/<slug:event_name>/<int:number_of_task>/",
         TestTasksDetailView.as_view(),
         name="event_testwork_task",
+    ),
+    path(
+        "writtten_work/<slug:event_name>/<int:number_of_task>",
+        WrittenWorkTasksDetailView.as_view(),
+        name="event_written_work_task",
+    ),
+    path(
+        "mixed_work/<slug:event_name>/<int:number_of_task>",
+        MixedWorkTasksDetailView.as_view(),
+        name="event_mixed_work_task",
     ),
     path(
         "<slug:category_name>/<slug:event_name>/result/",

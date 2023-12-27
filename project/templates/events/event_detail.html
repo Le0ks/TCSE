@@ -43,5 +43,7 @@
                 <h4 class="lead fs-5">Вы завершили это мероприятие!</h4>
             {% endif %}
         {% endwith %}
+    {% else %}
+        <h1 class="text-center fs-1">Вы не имеете доступа к этому мероприятию.</h1>
     {% endif %}
 {% endblock content %}

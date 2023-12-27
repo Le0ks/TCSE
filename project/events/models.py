@@ -114,9 +114,11 @@ class Event(models.Model):
         "изображение", upload_to=event_directiry_path, default=None
     )
     secret_key = models.CharField(
-        default=get_random_string(20, string.printable),
+        default=get_random_string(
+            20, string.ascii_letters + string.digits + string.punctuation
+        ),
         unique=True,
-        max_length=20,
+        max_length=30,
     )
 
     def get_absolute_url(self):
